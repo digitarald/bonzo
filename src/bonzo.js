@@ -4,13 +4,14 @@
       html = doc.documentElement,
       query = null,
       byTag = 'getElementsByTagName',
-      specialAttributes = /^checked|value|selected$/,
-      specialTags = /select|map|fieldset|table|tbody|tr|colgroup/i,
+      specialAttributes = /^(?:checked|value|selected$/,
+      specialTags = /^(?:select|map|fieldset|table|tbody|tr|colgroup)$/i,
       tagMap = { select: 'option', table: 'tbody', tr: 'td' },
-      stateAttributes = /^checked|selected$/,
+      stateAttributes = /^(?:checked|selected)$/,
       ie = /msie/i.test(navigator.userAgent),
       uidList = [],
       uuids = 0,
+      uidAttribute = 'data-node-uid',
       digit = /^-?[\d\.]+$/,
       px = 'px',
       // commonly used methods
@@ -409,16 +410,14 @@
     },
 
     data: function (k, v) {
-      var el = this[0];
+      var el = this[0], uid;
       if (typeof v === 'undefined') {
-        el[getAttribute]('data-node-uid') || el[setAttribute]('data-node-uid', ++uuids);
-        var uid = el[getAttribute]('data-node-uid');
+        (uid = el[getAttribute](uidAttribute)) || el[setAttribute](uidAttribute, (uid = ++uuids));
         uidList[uid] || (uidList[uid] = {});
         return uidList[uid][k];
       } else {
         return this.each(function (el) {
-          el[getAttribute]('data-node-uid') || el[setAttribute]('data-node-uid', ++uuids);
-          var uid = el[getAttribute]('data-node-uid');
+          (uid = el[getAttribute](uidAttribute)) || el[setAttribute](uidAttribute, (uid = ++uuids));
           var o = {};
           o[k] = v;
           uidList[uid] = o;
